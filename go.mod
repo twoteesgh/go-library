@@ -1,4 +1,4 @@
-module github.com/twoteesgh/gowebexamples
+module github.com/twoteesgh/go-library
 
 go 1.21.5
 

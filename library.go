@@ -1,4 +1,4 @@
-package main
+package library
 
 import (
 	"database/sql"
@@ -64,7 +64,6 @@ func createBooksTable(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Fprintln(w, "Books table created")
 	}
-
 }
 
 func showBook(w http.ResponseWriter, r *http.Request) {
