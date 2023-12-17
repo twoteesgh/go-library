@@ -1,4 +1,36 @@
 {{define "content"}}
-<h1>Welcome to the Library.</h1>
+
+<h1 class="text-4xl mb-6 font-semibold">Welcome to the Library.</h1>
+
+<h2 class="text-2xl mb-4">Add a book to the shelves:</h2>
+<form hx-post="books" hx-target="#books" hx-swap="beforeend" class="border p-4 max-w-md rounded-md mb-4">
+    <div class="mb-4">
+        <label for="bookTitle" class="block font-medium text-gray-700 text-lg">Book Title</label>
+        <input
+            type="text"
+            id="bookTitle"
+            name="bookTitle"
+            placeholder="The Lord of the Rings"
+            class="mt-1 w-full rounded-md border-gray-200 shadow-sm text-md"
+        />
+    </div>
+    <div class="mb-4">
+        <label for="bookAuthor" class="block font-medium text-gray-700 text-lg">Book Author</label>
+        <input
+            type="text"
+            id="bookAuthor"
+            name="bookAuthor"
+            placeholder="J.R.R Tolkien"
+            class="mt-1 w-full rounded-md border-gray-200 shadow-sm text-md"
+        />
+    </div>
+    <input type="submit" value="Add" class="rounded-md bg-blue-600 py-1 px-4 text-white">
+</form>
+
+<h2 class="text-2xl mb-4">Books Available:</h2>
+<ul id="books" hx-trigger="load" hx-get="books">
+    Loading books...
+</ul>
+
 {{end}}
 {{template "guest"}}

@@ -23,7 +23,14 @@ func main() {
 	// Register application routes
 	r := mux.NewRouter()
 	r.HandleFunc("/", handlers.Home).Methods("GET")
-	r.HandleFunc("/books/{author}/{title}", showBook).Methods("GET")
+	r.HandleFunc("/books", handlers.CreateBook(db)).Methods("POST")
+	r.HandleFunc("/books", handlers.GetBooks(db)).Methods("GET")
+
+	// FS initialization
+	fs := http.FileServer(http.Dir("assets/"))
+	r.PathPrefix("/static/").
+		Handler(http.StripPrefix("/static/", fs)).
+		Methods("GET")
 
 	http.ListenAndServe(":8008", r)
 }
@@ -64,9 +71,4 @@ func setup() {
 	} else {
 		m.Up()
 	}
-}
-
-func showBook(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	fmt.Fprintf(w, "You are reading %s, by %s", vars["title"], vars["author"])
 }
