@@ -12,6 +12,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/twoteesgh/go-library/handlers"
 )
 
 var db *sql.DB
@@ -21,6 +22,7 @@ func main() {
 
 	// Register application routes
 	r := mux.NewRouter()
+	r.HandleFunc("/", handlers.Home).Methods("GET")
 	r.HandleFunc("/books/{author}/{title}", showBook).Methods("GET")
 
 	http.ListenAndServe(":8008", r)

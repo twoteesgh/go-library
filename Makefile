@@ -1,10 +1,10 @@
 include .env
 mysql_url="mysql://${DB_USER}:${DB_PASSWORD}@(${DB_HOST}:${DB_PORT})/${DB_NAME}?multiStatements=true"
 
-.PHONY: all migrate-create migrate-up
+.PHONY: all migrate-create migrate-up migrate-down
 
 all:
-	$(info Please provide an argument)
+	go run github.com/cosmtrek/air@latest
 
 migrate-version:
 	@migrate -path migrations -database $(mysql_url) version
