@@ -1,30 +1,36 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"net/http"
-	"os"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/twoteesgh/go-library/handlers"
+	"github.com/twoteesgh/go-library/services"
 )
 
-var db *sql.DB
+type Library struct {
+	home  func(http.ResponseWriter, *http.Request)
+	books *handlers.BookHandler
+	auth  *handlers.AuthHandler
+}
 
 func main() {
-	setup()
+	library := setup()
 
 	// Register application routes
 	r := mux.NewRouter()
-	r.HandleFunc("/", handlers.Home).Methods("GET")
-	r.HandleFunc("/books", handlers.CreateBook(db)).Methods("POST")
-	r.HandleFunc("/books", handlers.GetBooks(db)).Methods("GET")
+	r.HandleFunc("/", library.home).Methods("GET")
+
+	// Auth routes
+	r.HandleFunc("/register", library.auth.ShowRegisterPage).Methods("GET")
+	r.HandleFunc("/register", library.auth.Register).Methods("POST")
+	r.HandleFunc("/login", library.auth.ShowLoginPage).Methods("GET")
+	r.HandleFunc("/login", library.auth.Login).Methods("POST")
+
+	// Book routes
+	r.HandleFunc("/books", library.books.CreateBook).Methods("POST")
+	r.HandleFunc("/books", library.books.GetBooks).Methods("GET")
 
 	// FS initialization
 	fs := http.FileServer(http.Dir("assets/"))
@@ -35,40 +41,19 @@ func main() {
 	http.ListenAndServe(":8008", r)
 }
 
-func setup() {
+func setup() *Library {
 	// Dotenv initialization
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
 
-	// Database initialization
-	sqlUrl := fmt.Sprintf(
-		"%s:%s@(%s:%s)/%s?multiStatements=true",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
-	)
-	sqlDb, sqlErr := sql.Open("mysql", sqlUrl)
-	if sqlErr != nil {
-		panic(sqlErr)
-	}
-	if err := sqlDb.Ping(); err != nil {
-		panic(err)
-	}
-	db = sqlDb
+	db := services.DB()
+	app := services.NewAppService(db)
 
-	// Run database migrations
-	if driver, err := mysql.WithInstance(db, &mysql.Config{}); err != nil {
-		panic(err)
-	} else if m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
-		"mysql",
-		driver,
-	); err != nil {
-		panic(err)
-	} else {
-		m.Up()
+	// Return app handlers
+	return &Library{
+		home:  app.Home,
+		books: handlers.NewBookHandler(app),
+		auth:  handlers.NewAuthHandler(app),
 	}
 }
