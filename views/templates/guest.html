@@ -9,8 +9,14 @@
     <link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
-    <header class="block bg-blue-500 h-12 flex text-white px-16 py-2">
-        <h1 class="text-xl block"><strong>GO</strong> Library</h1>
+    <header class="block bg-blue-500 h-12 flex space-between text-white px-16 py-2">
+        <h1 class="text-xl block">
+            <a href="/">
+                <strong>GO</strong> Library
+            </a>
+        </h1>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
     </header>
     <main class="mx-16 mt-6">
         {{template "content"}}
