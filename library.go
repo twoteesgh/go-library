@@ -27,6 +27,7 @@ func main() {
 	r.HandleFunc("/register", app.auth.Register).Methods("POST")
 	r.HandleFunc("/login", app.auth.ShowLoginPage).Methods("GET")
 	r.HandleFunc("/login", app.auth.Login).Methods("POST")
+	r.HandleFunc("/logout", app.auth.Logout).Methods("GET")
 
 	// Book routes
 	r.HandleFunc("/books", app.books.CreateBook).Methods("POST")

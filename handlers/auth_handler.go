@@ -129,7 +129,17 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	//
+	session, err := h.app.Session.Get(r, "auth")
+	if err != nil {
+		panic(err)
+	}
+
+	session.Values["user"] = nil
+	if err := session.Save(r, w); err != nil {
+		panic(err)
+	}
+
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func hashPassword(password string) string {

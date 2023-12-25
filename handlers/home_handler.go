@@ -25,7 +25,7 @@ func (h *HomeHandler) Home(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	} else {
 		session, _ := h.app.Session.Get(r, "auth")
-		err := tmpl.Execute(w, session.Values["user"].(User))
+		err := tmpl.Execute(w, session.Values["user"])
 		if err != nil {
 			panic(err)
 		}

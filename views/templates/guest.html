@@ -18,6 +18,7 @@
         <div class="flex items-center">
             {{if .Name}}
                 <span class="font-semibold">Hello, {{.Name}}</span>
+                <a class="ml-4 font-semibold" href="/logout">Logout</a>
             {{else}}
                 <a class="font-semibold" href="/login">Login</a>
                 <a class="ml-4 font-semibold" href="/register">Register</a>
