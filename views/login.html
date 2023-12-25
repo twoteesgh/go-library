@@ -3,7 +3,7 @@
 <h1 class="text-4xl mb-6 font-semibold">Login</h1>
 
 <h2 class="text-2xl mb-4">Enter your details</h2>
-<form hx-post="books" hx-target="#books" hx-swap="beforeend" class="border p-4 max-w-md rounded-md mb-4">
+<form hx-post="login" hx-target="#response" class="border p-4 max-w-md rounded-md mb-4">
     <div class="mb-4">
         <label for="email" class="block font-medium text-gray-700 text-lg">Email</label>
         <input
@@ -22,8 +22,9 @@
             class="mt-1 w-full border-gray-200 shadow-sm text-md"
         />
     </div>
-    <input type="submit" value="Add" class="rounded-md bg-blue-600 py-1 px-4 text-white">
+    <input type="submit" value="Login" class="rounded-md bg-blue-500 py-1 px-4 text-white">
 </form>
+<div id="response"></div>
 
 {{end}}
 {{template "guest"}}

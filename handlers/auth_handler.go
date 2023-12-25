@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/gob"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -14,15 +15,15 @@ type AuthHandler struct {
 }
 
 type User struct {
-	id         int
-	name       string
-	email      string
-	password   string
-	created_at string
-	updated_at string
+	Id         int
+	Name       string
+	Email      string
+	Created_at string
+	Updated_at string
 }
 
 func NewAuthHandler(app *services.App) *AuthHandler {
+	gob.Register(User{})
 	return &AuthHandler{
 		app: app,
 	}
@@ -41,15 +42,16 @@ func (h *AuthHandler) ShowRegisterPage(w http.ResponseWriter, r *http.Request) {
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	user := &User{
-		name:     r.FormValue("name"),
-		email:    r.FormValue("email"),
-		password: hashPassword(r.FormValue("password")),
+		Name:  r.FormValue("name"),
+		Email: r.FormValue("email"),
 	}
+
+	password := hashPassword(r.FormValue("password"))
 
 	_, err := h.app.DB.Exec(`
 		INSERT INTO users (name, email, password)
 		VALUES (?, ?, ?)
-	`, user.name, user.email, user.password)
+	`, user.Name, user.Email, password)
 
 	if err != nil {
 		fmt.Fprint(w, `<p class="text-red-700 font-semibold">Fail</p>`)
@@ -70,7 +72,60 @@ func (h *AuthHandler) ShowLoginPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	//
+	var password string
+
+	user := &User{
+		Email: r.FormValue("email"),
+	}
+
+	rows, err := h.app.DB.Query(`
+		SELECT
+			id,
+			name,
+			email,
+			password,
+			created_at,
+			updated_at
+		FROM users
+		WHERE email = ?
+	`, user.Email)
+
+	if err != nil {
+		panic(err)
+	}
+
+	if rows.Next() {
+		if err := rows.Scan(
+			&user.Id,
+			&user.Name,
+			&user.Email,
+			&password,
+			&user.Created_at,
+			&user.Updated_at,
+		); err != nil {
+			panic(err)
+		}
+	} else {
+		fmt.Fprintf(w, `<p class="text-red-700 font-semibold">Your details are incorrect. Please try again.</p>`)
+		return
+	}
+
+	if checkPasswordHash(r.FormValue("password"), password) {
+		session, err := h.app.Session.Get(r, "auth")
+		if err != nil {
+			panic(err)
+		}
+
+		session.Values["user"] = user
+		if err := session.Save(r, w); err != nil {
+			panic(err)
+		}
+
+		w.Header().Set("HX-Location", "/")
+		fmt.Fprintf(w, `<p class="text-green-700 font-semibold">Success %#v</p>`, user)
+	} else {
+		fmt.Fprint(w, `<p class="text-red-700 font-semibold">Your details are incorrect. Please try again.</p>`)
+	}
 }
 
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +140,10 @@ func hashPassword(password string) string {
 	return string(bytes)
 }
 
-func checkPasswordHash(password, hash string) bool {
+func checkPasswordHash(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	if err != nil {
+		panic(err)
+	}
 	return err == nil
 }

@@ -9,28 +9,28 @@ import (
 	"github.com/twoteesgh/go-library/services"
 )
 
-type Library struct {
-	home  func(http.ResponseWriter, *http.Request)
+type App struct {
+	home  *handlers.HomeHandler
 	books *handlers.BookHandler
 	auth  *handlers.AuthHandler
 }
 
 func main() {
-	library := setup()
+	app := setup()
 
 	// Register application routes
 	r := mux.NewRouter()
-	r.HandleFunc("/", library.home).Methods("GET")
+	r.HandleFunc("/", app.home.Home).Methods("GET")
 
 	// Auth routes
-	r.HandleFunc("/register", library.auth.ShowRegisterPage).Methods("GET")
-	r.HandleFunc("/register", library.auth.Register).Methods("POST")
-	r.HandleFunc("/login", library.auth.ShowLoginPage).Methods("GET")
-	r.HandleFunc("/login", library.auth.Login).Methods("POST")
+	r.HandleFunc("/register", app.auth.ShowRegisterPage).Methods("GET")
+	r.HandleFunc("/register", app.auth.Register).Methods("POST")
+	r.HandleFunc("/login", app.auth.ShowLoginPage).Methods("GET")
+	r.HandleFunc("/login", app.auth.Login).Methods("POST")
 
 	// Book routes
-	r.HandleFunc("/books", library.books.CreateBook).Methods("POST")
-	r.HandleFunc("/books", library.books.GetBooks).Methods("GET")
+	r.HandleFunc("/books", app.books.CreateBook).Methods("POST")
+	r.HandleFunc("/books", app.books.GetBooks).Methods("GET")
 
 	// FS initialization
 	fs := http.FileServer(http.Dir("assets/"))
@@ -41,7 +41,7 @@ func main() {
 	http.ListenAndServe(":8008", r)
 }
 
-func setup() *Library {
+func setup() *App {
 	// Dotenv initialization
 	if err := godotenv.Load(); err != nil {
 		panic(err)
@@ -51,8 +51,8 @@ func setup() *Library {
 	app := services.NewAppService(db)
 
 	// Return app handlers
-	return &Library{
-		home:  app.Home,
+	return &App{
+		home:  handlers.NewHomeHandler(app),
 		books: handlers.NewBookHandler(app),
 		auth:  handlers.NewAuthHandler(app),
 	}

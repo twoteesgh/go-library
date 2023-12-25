@@ -16,12 +16,16 @@
             </a>
         </h1>
         <div class="flex items-center">
-            <a class="font-semibold" href="/login">Login</a>
-            <a class="ml-4 font-semibold" href="/register">Register</a>
+            {{if .Name}}
+                <span class="font-semibold">Hello, {{.Name}}</span>
+            {{else}}
+                <a class="font-semibold" href="/login">Login</a>
+                <a class="ml-4 font-semibold" href="/register">Register</a>
+            {{end}}
         </div>
     </header>
     <main class="mx-16 mt-6">
-        {{template "content"}}
+        {{template "content" .}}
     </main>
     <!-- Scripts -->
     <script src="https://unpkg.com/htmx.org@1.9.9"></script>

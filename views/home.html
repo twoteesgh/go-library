@@ -1,6 +1,6 @@
 {{define "content"}}
 
-<h1 class="text-4xl mb-6 font-semibold">Welcome to the Library.</h1>
+<h1 class="text-4xl mb-6 font-semibold">Welcome to the Library</h1>
 
 <h2 class="text-2xl mb-4">Add a book to the shelves:</h2>
 <form hx-post="books" hx-target="#books" hx-swap="beforeend" class="border p-4 max-w-md rounded-md mb-4">
@@ -24,7 +24,7 @@
             class="mt-1 w-full border-gray-200 shadow-sm text-md"
         />
     </div>
-    <input type="submit" value="Add" class="rounded-md bg-blue-600 py-1 px-4 text-white">
+    <input type="submit" value="Add" class="rounded-md bg-blue-500 py-1 px-4 text-white">
 </form>
 
 <h2 class="text-2xl mb-4">Books Available:</h2>
@@ -33,4 +33,4 @@
 </ul>
 
 {{end}}
-{{template "guest"}}
+{{template "guest" .}}
