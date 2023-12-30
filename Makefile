@@ -4,7 +4,7 @@ mysql_url="mysql://${DB_USER}:${DB_PASSWORD}@(${DB_HOST}:${DB_PORT})/${DB_NAME}?
 .PHONY: all migrate-create migrate-up migrate-down
 
 all:
-	go run github.com/cosmtrek/air@latest
+	go run github.com/cosmtrek/air@latest & npx tailwindcss -o assets/css/app.css --watch
 
 migrate-version:
 	@migrate -path migrations -database $(mysql_url) version

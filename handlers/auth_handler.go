@@ -152,8 +152,5 @@ func hashPassword(password string) string {
 
 func checkPasswordHash(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	if err != nil {
-		panic(err)
-	}
 	return err == nil
 }

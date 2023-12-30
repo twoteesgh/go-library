@@ -1,4 +1,4 @@
-{{define "guest"}}
+{{define "wrapper"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Go Library</title>
     <!-- Styles -->
+    <script src="https://unpkg.com/feather-icons"></script>
     <link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
@@ -16,13 +17,8 @@
             </a>
         </h1>
         <div class="flex items-center">
-            {{if .Name}}
-                <span class="font-semibold">Hello, {{.Name}}</span>
-                <a class="ml-4 font-semibold" href="/logout">Logout</a>
-            {{else}}
-                <a class="font-semibold" href="/login">Login</a>
-                <a class="ml-4 font-semibold" href="/register">Register</a>
-            {{end}}
+            <a class="font-semibold" href="/login">Login</a>
+            <a class="ml-4 font-semibold" href="/register">Register</a>
         </div>
     </header>
     <main class="mx-16 mt-6">
@@ -30,6 +26,9 @@
     </main>
     <!-- Scripts -->
     <script src="https://unpkg.com/htmx.org@1.9.9"></script>
+    <script>
+        feather.replace();
+    </script>
 </body>
 </html>
 {{end}}

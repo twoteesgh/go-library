@@ -18,13 +18,19 @@ func NewHomeHandler(app *services.App) *HomeHandler {
 }
 
 func (h *HomeHandler) Home(w http.ResponseWriter, r *http.Request) {
+	session, _ := h.app.Session.Get(r, "auth")
+	wrapper := h.app.Templates["guest"]
+
+	if session.Values["user"] != nil {
+		wrapper = h.app.Templates["auth"]
+	}
+
 	if tmpl, err := template.ParseFiles(
 		"views/home.html",
-		h.app.Templates["guest"],
+		wrapper,
 	); err != nil {
 		panic(err)
 	} else {
-		session, _ := h.app.Session.Get(r, "auth")
 		err := tmpl.Execute(w, session.Values["user"])
 		if err != nil {
 			panic(err)
