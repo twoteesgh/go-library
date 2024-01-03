@@ -5,24 +5,18 @@ import (
 	"os"
 
 	"github.com/gorilla/sessions"
+	"github.com/twoteesgh/go-library/internal/types"
 )
 
-type App struct {
-	Session   *sessions.CookieStore
-	DB        *sql.DB
-	Templates map[string]string
-}
-
-func NewAppService(db *sql.DB) *App {
+func NewAppService(db *sql.DB) *types.App {
 	key := []byte(os.Getenv("APP_KEY"))
 	store := sessions.NewCookieStore(key)
-
 	templates := map[string]string{
-		"guest": "views/templates/guest.html",
-		"auth":  "views/templates/auth.html",
+		"guest": "web/templates/partials/guest.html",
+		"auth":  "web/templates/partials/auth.html",
 	}
 
-	return &App{
+	return &types.App{
 		Session:   store,
 		DB:        db,
 		Templates: templates,

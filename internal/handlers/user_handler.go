@@ -3,14 +3,14 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/twoteesgh/go-library/services"
+	"github.com/twoteesgh/go-library/internal/types"
 )
 
 type UserHandler struct {
-	app *services.App
+	app *types.App
 }
 
-func NewUserHandler(app *services.App) *UserHandler {
+func NewUserHandler(app *types.App) *UserHandler {
 	return &UserHandler{
 		app: app,
 	}

@@ -33,7 +33,7 @@ func DB() *sql.DB {
 	if driver, err := mysql.WithInstance(sqlDb, &mysql.Config{}); err != nil {
 		panic(err)
 	} else if m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
+		"file://scripts/migrations",
 		"mysql",
 		driver,
 	); err != nil {

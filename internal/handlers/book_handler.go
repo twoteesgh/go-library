@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/twoteesgh/go-library/services"
+	"github.com/twoteesgh/go-library/internal/types"
 )
 
 type BookHandler struct {
-	app *services.App
+	app *types.App
 }
 
 type Book struct {
@@ -16,7 +16,7 @@ type Book struct {
 	author string
 }
 
-func NewBookHandler(app *services.App) *BookHandler {
+func NewBookHandler(app *types.App) *BookHandler {
 	return &BookHandler{
 		app: app,
 	}
@@ -26,6 +26,7 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("bookTitle")
 	author := r.FormValue("bookAuthor")
 
+	// TODO: Make a repository
 	if _, err := h.app.DB.Exec(`
 		INSERT INTO books (title, author)
 		VALUES (?, ?)
@@ -33,10 +34,14 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	fmt.Fprintf(w, "<li>%s - %s</li>", title, author)
+	fmt.Fprint(w, h.app.GetHtml("components/books/list-item", map[string]string{
+		"title":  title,
+		"author": author,
+	}))
 }
 
 func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
+	// TODO: Make a repository
 	rows, err := h.app.DB.Query(`
 		SELECT title, author FROM books LIMIT 50	
 	`)
@@ -58,6 +63,9 @@ func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, book := range books {
-		fmt.Fprintf(w, "<li>%s - %s</li>", book.title, book.author)
+		fmt.Fprint(w, h.app.GetHtml("components/books/list-item", map[string]string{
+			"title":  book.title,
+			"author": book.author,
+		}))
 	}
 }

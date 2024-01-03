@@ -6,24 +6,16 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/twoteesgh/go-library/services"
+	"github.com/twoteesgh/go-library/internal/types"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandler struct {
-	app *services.App
+	app *types.App
 }
 
-type User struct {
-	Id         int
-	Name       string
-	Email      string
-	Created_at string
-	Updated_at string
-}
-
-func NewAuthHandler(app *services.App) *AuthHandler {
-	gob.Register(User{})
+func NewAuthHandler(app *types.App) *AuthHandler {
+	gob.Register(types.User{})
 	return &AuthHandler{
 		app: app,
 	}
@@ -31,7 +23,7 @@ func NewAuthHandler(app *services.App) *AuthHandler {
 
 func (h *AuthHandler) ShowRegisterPage(w http.ResponseWriter, r *http.Request) {
 	if tmpl, err := template.ParseFiles(
-		"views/register.html",
+		"web/templates/register.html",
 		h.app.Templates["guest"],
 	); err != nil {
 		panic(err)
@@ -41,7 +33,7 @@ func (h *AuthHandler) ShowRegisterPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	user := &User{
+	user := &types.User{
 		Name:  r.FormValue("name"),
 		Email: r.FormValue("email"),
 	}
@@ -62,7 +54,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 func (h *AuthHandler) ShowLoginPage(w http.ResponseWriter, r *http.Request) {
 	if tmpl, err := template.ParseFiles(
-		"views/login.html",
+		"web/templates/login.html",
 		h.app.Templates["guest"],
 	); err != nil {
 		panic(err)
@@ -74,7 +66,7 @@ func (h *AuthHandler) ShowLoginPage(w http.ResponseWriter, r *http.Request) {
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var password string
 
-	user := &User{
+	user := &types.User{
 		Email: r.FormValue("email"),
 	}
 

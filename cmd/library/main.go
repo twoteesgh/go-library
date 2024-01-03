@@ -5,8 +5,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.com/twoteesgh/go-library/handlers"
-	"github.com/twoteesgh/go-library/services"
+	"github.com/twoteesgh/go-library/internal/handlers"
+	"github.com/twoteesgh/go-library/internal/services"
 )
 
 type App struct {

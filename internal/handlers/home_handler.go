@@ -4,14 +4,14 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/twoteesgh/go-library/services"
+	"github.com/twoteesgh/go-library/internal/types"
 )
 
 type HomeHandler struct {
-	app *services.App
+	app *types.App
 }
 
-func NewHomeHandler(app *services.App) *HomeHandler {
+func NewHomeHandler(app *types.App) *HomeHandler {
 	return &HomeHandler{
 		app: app,
 	}
@@ -26,7 +26,7 @@ func (h *HomeHandler) Home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if tmpl, err := template.ParseFiles(
-		"views/home.html",
+		"web/templates/home.html",
 		wrapper,
 	); err != nil {
 		panic(err)
