@@ -28,9 +28,9 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: Make a repository
 	if _, err := h.app.DB.Exec(`
-		INSERT INTO books (title, author)
-		VALUES (?, ?)
-	`, title, author); err != nil {
+    INSERT INTO books (title, author)
+    VALUES (?, ?)
+    `, title, author); err != nil {
 		panic(err)
 	}
 
@@ -43,8 +43,8 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 	// TODO: Make a repository
 	rows, err := h.app.DB.Query(`
-		SELECT title, author FROM books LIMIT 50	
-	`)
+    SELECT title, author FROM books LIMIT 50	
+    `)
 	if err != nil {
 		panic(err)
 	}

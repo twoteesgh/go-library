@@ -34,9 +34,9 @@ func main() {
 	r.HandleFunc("/books", app.books.GetBooks).Methods("GET")
 
 	// FS initialization
-	fs := http.FileServer(http.Dir("assets/"))
-	r.PathPrefix("/static/").
-		Handler(http.StripPrefix("/static/", fs)).
+	fs := http.FileServer(http.Dir("web/"))
+	r.PathPrefix("/web/").
+		Handler(http.StripPrefix("/web/", fs)).
 		Methods("GET")
 
 	http.ListenAndServe(":8008", r)
